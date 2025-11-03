@@ -1,0 +1,21 @@
+{
+  "nodes": [
+    {"id":"loom","label":"Loom","url":"https://www.ardaena.com/ardaena-nexus/","color":"#141414"},
+    {"id":"prism","label":"Prism","color":"#a19f9f"},
+    {"id":"flux","label":"Flux","color":"#a19f9f"},
+    {"id":"echo","label":"Echo","color":"#a19f9f"},
+    {"id":"nova","label":"Nova","color":"#a19f9f"},
+    {"id":"pulse","label":"Pulse","color":"#a19f9f"},
+    {"id":"quanta","label":"Quanta","color":"#a19f9f"},
+    {"id":"axiom","label":"Axiom","color":"#a19f9f"}
+  ],
+  "edges": [
+    {"id":"loom-prism","source":"loom","target":"prism"},
+    {"id":"prism-flux","source":"prism","target":"flux"},
+    {"id":"flux-echo","source":"flux","target":"echo"},
+    {"id":"echo-nova","source":"echo","target":"nova"},
+    {"id":"nova-pulse","source":"nova","target":"pulse"},
+    {"id":"pulse-quanta","source":"pulse","target":"quanta"},
+    {"id":"quanta-axiom","source":"quanta","target":"axiom"}
+  ]
+}

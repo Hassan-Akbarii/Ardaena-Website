@@ -1,0 +1,18 @@
+[network_graph height="560px" options='{"theme":"light","openInNewTab":true,"redirectEnabled":true}']
+{
+  "nodes": [
+    {"id":"loom","label":"Loom","url":"https://www.ardaena.com/ardaena-nexus/","color":"#111827"},
+    {"id":"prism","label":"Prism","color":"#374151"},
+    {"id":"flux","label":"Flux","color":"#374151"},
+    {"id":"echo","label":"Echo","color":"#374151"},
+    {"id":"nova","label":"Nova","color":"#374151"},
+    {"id":"pulse","label":"Pulse","color":"#374151"},
+    {"id":"quanta","label":"Quanta","color":"#374151"},
+    {"id":"axiom","label":"Axiom","color":"#374151"}
+  ],
+  "edges": []
+}
+[/network_graph]
+
+# Alternative: use the simpler nodes attribute (same result)
+[network_graph height="560px" nodes="Loom|https://www.ardaena.com/ardaena-nexus/|#111827; Prism||#374151; Flux||#374151; Echo||#374151; Nova||#374151; Pulse||#374151; Quanta||#374151; Axiom||#374151" options='{"openInNewTab":true,"redirectEnabled":true}'][/network_graph]
