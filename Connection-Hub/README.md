@@ -37,36 +37,32 @@ Connection-Hub/
 
 ## SharePoint Integration
 
-### Prerequisites
-1. Microsoft 365 account with access to SharePoint
-2. Azure AD App Registration for authentication
-3. Proper permissions on the SharePoint List
+### Quick Setup (3 Steps)
 
-### Configuration Steps
+**See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed instructions**
 
-1. **Azure AD App Registration**:
-   - Go to Azure Portal → Azure Active Directory → App registrations
-   - Create new registration
-   - Add redirect URI: `https://yourdomain.com/connection-hub`
-   - Note the Client ID and Tenant ID
-   - Add API permissions: `Sites.Read.All`, `User.Read`
-
-2. **Update Configuration**:
-   Edit `assets/js/sharepoint-api.js` and update the `sharePointConfig` object:
+1. **Get your List ID** from SharePoint list settings
+2. **Create Azure AD App** at portal.azure.com with `Sites.ReadWrite.All` permission
+3. **Update config** in `assets/js/sharepoint-api.js`:
    ```javascript
    const sharePointConfig = {
-       siteUrl: 'your-sharepoint-site-url',
-       listId: 'your-list-id',
-       clientId: 'your-azure-client-id',
-       tenantId: 'your-azure-tenant-id'
+       siteUrl: 'ardaenacom-my.sharepoint.com:/personal/shahrashoub_ardaena_com',
+       listId: 'YOUR-LIST-ID-HERE',
+       clientId: 'YOUR-CLIENT-ID-HERE',
+       tenantId: 'YOUR-TENANT-ID-HERE'
    };
    ```
 
-3. **Install MSAL.js** (Microsoft Authentication Library):
-   Add to your HTML `<head>`:
-   ```html
-   <script src="https://alcdn.msauth.net/browser/2.14.2/js/msal-browser.min.js"></script>
-   ```
+### Current Status
+- ✅ MSAL.js authentication library included
+- ✅ Mock mode works for testing without SharePoint
+- ⚙️ Ready for SharePoint connection (needs configuration)
+
+### Authentication
+The app uses MSAL.js (Microsoft Authentication Library) for secure authentication:
+- First-time: Interactive popup login
+- Subsequent: Silent token refresh
+- Permissions: `Sites.ReadWrite.All`, `User.Read`
 
 ## Integration with WordPress Website
 

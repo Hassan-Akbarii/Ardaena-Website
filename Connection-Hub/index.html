@@ -17,6 +17,9 @@
         <!-- Control Panel -->
         <div class="control-panel">
             <div class="control-group">
+                <button id="toggle-left-panel" class="btn btn-icon" title="Toggle Info Panel">
+                    <span class="icon">☰</span>
+                </button>
                 <label for="connector-select">Select Connector Category:</label>
                 <select id="connector-select" class="connector-selector">
                     <option value="relatedTo">Related To</option>
@@ -28,69 +31,175 @@
             <div class="control-group">
                 <button id="refresh-btn" class="btn btn-primary">Refresh Data</button>
                 <button id="reset-zoom-btn" class="btn btn-secondary">Reset View</button>
+                <button id="toggle-right-panel" class="btn btn-icon" title="Toggle Calendar Panel">
+                    <span class="icon">📅</span>
+                </button>
             </div>
         </div>
 
-        <!-- Graph Canvas -->
-        <div id="graph-container" class="graph-container">
-            <svg id="network-graph"></svg>
-            <div id="loading" class="loading">Loading connections...</div>
-        </div>
-
-        <!-- Data Modal -->
-        <div id="data-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h2 id="modal-name">Person Name</h2>
+        <!-- Main Content Area with Panels -->
+        <div class="main-content">
+            <!-- Left Panel (Person Details / Edit / Add) -->
+            <aside id="left-panel" class="side-panel left-panel">
+                <div class="panel-header">
+                    <h2 id="panel-title">Person Details</h2>
+                    <button id="close-left-panel" class="close-panel-btn">&times;</button>
+                </div>
                 
-                <div class="modal-body">
-                    <div class="data-section">
-                        <h3>Contact Information</h3>
-                        <div class="data-item">
-                            <strong>Firm:</strong>
-                            <span id="modal-firm">-</span>
+                <div class="panel-body">
+                    <!-- View Mode -->
+                    <div id="view-mode" class="mode-container">
+                        <div class="empty-state" id="empty-state">
+                            <div class="empty-icon">👤</div>
+                            <p>Select a person node to view details</p>
+                            <p class="empty-hint">or create a new connection</p>
                         </div>
-                        <div class="data-item">
-                            <strong>Job Position:</strong>
-                            <span id="modal-position">-</span>
-                        </div>
-                        <div class="data-item">
-                            <strong>Website:</strong>
-                            <a id="modal-website" href="#" target="_blank">-</a>
-                        </div>
-                        <div class="data-item">
-                            <strong>LinkedIn:</strong>
-                            <a id="modal-linkedin" href="#" target="_blank">View Profile</a>
+                        
+                        <div id="person-details" class="person-details" style="display: none;">
+                            <div class="detail-section">
+                                <h3>Contact Information</h3>
+                                <div class="detail-item">
+                                    <label>Name:</label>
+                                    <span id="detail-name">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Firm:</label>
+                                    <span id="detail-firm">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Job Position:</label>
+                                    <span id="detail-position">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Website:</label>
+                                    <a id="detail-website" href="#" target="_blank">-</a>
+                                </div>
+                                <div class="detail-item">
+                                    <label>LinkedIn:</label>
+                                    <a id="detail-linkedin" href="#" target="_blank">View Profile</a>
+                                </div>
+                            </div>
+
+                            <div class="detail-section">
+                                <h3>Connection Details</h3>
+                                <div class="detail-item">
+                                    <label>Related To:</label>
+                                    <span id="detail-related">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Key Words:</label>
+                                    <span id="detail-keywords">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Last Contact:</label>
+                                    <span id="detail-lastcontact">-</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-section" id="notes-detail-section">
+                                <h3>Notes</h3>
+                                <p id="detail-notes">-</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="data-section">
-                        <h3>Connection Details</h3>
-                        <div class="data-item">
-                            <strong>Related To:</strong>
-                            <span id="modal-related">-</span>
-                        </div>
-                        <div class="data-item">
-                            <strong>Key Words:</strong>
-                            <span id="modal-keywords">-</span>
-                        </div>
-                        <div class="data-item">
-                            <strong>Last Contact:</strong>
-                            <span id="modal-lastcontact">-</span>
-                        </div>
-                    </div>
+                    <!-- Edit Mode -->
+                    <div id="edit-mode" class="mode-container" style="display: none;">
+                        <form id="person-form" class="person-form">
+                            <div class="form-section">
+                                <h3>Contact Information</h3>
+                                <div class="form-group">
+                                    <label for="form-name">Name: *</label>
+                                    <input type="text" id="form-name" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-firm">Firm:</label>
+                                    <input type="text" id="form-firm" name="firm">
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-position">Job Position:</label>
+                                    <input type="text" id="form-position" name="position">
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-website">Website:</label>
+                                    <input type="url" id="form-website" name="website">
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-linkedin">LinkedIn:</label>
+                                    <input type="url" id="form-linkedin" name="linkedin">
+                                </div>
+                            </div>
 
-                    <div class="data-section" id="notes-section">
-                        <h3>Notes</h3>
-                        <p id="modal-notes">-</p>
+                            <div class="form-section">
+                                <h3>Connection Details</h3>
+                                <div class="form-group">
+                                    <label for="form-related">Related To:</label>
+                                    <input type="text" id="form-related" name="related">
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-keywords">Key Words:</label>
+                                    <input type="text" id="form-keywords" name="keywords" placeholder="Separate with commas">
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-lastcontact">Last Contact:</label>
+                                    <input type="date" id="form-lastcontact" name="lastcontact">
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h3>Notes</h3>
+                                <div class="form-group">
+                                    <label for="form-notes">Notes:</label>
+                                    <textarea id="form-notes" name="notes" rows="4"></textarea>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
+
+                <!-- Panel Footer with Actions -->
+                <div class="panel-footer">
+                    <button id="edit-btn" class="btn btn-primary btn-block">Add New</button>
+                    <button id="confirm-btn" class="btn btn-success btn-block" style="display: none;">Confirm</button>
+                    <button id="cancel-btn" class="btn btn-secondary btn-block" style="display: none;">Cancel</button>
+                </div>
+            </aside>
+
+            <!-- Graph Canvas -->
+            <div id="graph-container" class="graph-container">
+                <svg id="network-graph"></svg>
+                <div id="loading" class="loading">Loading connections...</div>
             </div>
+
+            <!-- Right Panel (Calendar / Reminders) -->
+            <aside id="right-panel" class="side-panel right-panel">
+                <div class="panel-header">
+                    <h2>Calendar & Reminders</h2>
+                    <button id="close-right-panel" class="close-panel-btn">&times;</button>
+                </div>
+                
+                <div class="panel-body">
+                    <div class="coming-soon">
+                        <div class="coming-soon-icon">📅</div>
+                        <h3>Coming Soon</h3>
+                        <p>Schedule reminders and meetings directly from the Connection Hub</p>
+                        <ul class="feature-list">
+                            <li>Set follow-up reminders</li>
+                            <li>Schedule meetings</li>
+                            <li>Sync with Microsoft Calendar</li>
+                            <li>View upcoming contacts</li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
         </div>
     </div>
 
     <!-- D3.js Library for Graph Visualization -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- MSAL.js Library for Microsoft Authentication -->
+    <script src="https://alcdn.msauth.net/browser/2.14.2/js/msal-browser.min.js"></script>
     
     <!-- Application Scripts -->
     <script src="assets/js/sharepoint-api.js"></script>

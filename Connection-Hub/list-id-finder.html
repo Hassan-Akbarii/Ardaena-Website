@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SharePoint List ID Finder</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+            display: none;
+        }
+        .result h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .copy-btn {
+            background: #4CAF50;
+            padding: 8px 15px;
+            font-size: 14px;
+            margin-top: 10px;
+            width: auto;
+        }
+        .error {
+            color: #f44336;
+            margin-top: 10px;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SharePoint List ID Finder</h1>
+        <p class="subtitle">Extract your List ID from SharePoint URL</p>
+
+        <div class="instructions">
+            <strong>📋 How to get your List Settings URL:</strong>
+            <ol>
+                <li>Open your Microsoft List in browser</li>
+                <li>Click the <strong>Settings</strong> gear icon (⚙️) in the top right</li>
+                <li>Click <strong>List settings</strong></li>
+                <li>Copy the entire URL from your browser's address bar</li>
+                <li>Paste it below</li>
+            </ol>
+        </div>
+
+        <label for="urlInput">Paste your List Settings URL here:</label>
+        <input 
+            type="text" 
+            id="urlInput" 
+            placeholder="https://ardaenacom-my.sharepoint.com/personal/shahrashoub_ardaena_com/_layouts/15/listedit.aspx?List=%7B12345678-...%7D"
+        >
+
+        <button onclick="extractListId()">Extract List ID</button>
+
+        <div id="result" class="result">
+            <h3>✅ List ID Found!</h3>
+            <p>Your List ID is:</p>
+            <div class="code" id="listIdDisplay"></div>
+            <button class="copy-btn" onclick="copyToClipboard()">Copy to Clipboard</button>
+            
+            <p style="margin-top: 20px;"><strong>Next Steps:</strong></p>
+            <ol>
+                <li>Copy the List ID above</li>
+                <li>Open <code>Connection-Hub/assets/js/sharepoint-api.js</code></li>
+                <li>Replace <code>YOUR-LIST-ID-HERE</code> with this value</li>
+            </ol>
+        </div>
+
+        <p id="error" class="error"></p>
+    </div>
+
+    <script>
+        function extractListId() {
+            const urlInput = document.getElementById('urlInput').value;
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+            const listIdDisplay = document.getElementById('listIdDisplay');
+
+            // Clear previous results
+            resultDiv.style.display = 'none';
+            errorDiv.textContent = '';
+
+            if (!urlInput) {
+                errorDiv.textContent = 'Please paste a URL';
+                return;
+            }
+
+            // Try to extract List ID from URL
+            // Pattern 1: List=%7B...%7D (URL encoded)
+            let match = urlInput.match(/List=%7B([0-9A-Fa-f-]+)%7D/i);
+            
+            if (!match) {
+                // Pattern 2: List={...} (not encoded)
+                match = urlInput.match(/List=\{([0-9A-Fa-f-]+)\}/i);
+            }
+
+            if (!match) {
+                // Pattern 3: lists/{guid}
+                match = urlInput.match(/lists\/([0-9A-Fa-f-]{36})/i);
+            }
+
+            if (match && match[1]) {
+                const listId = match[1];
+                listIdDisplay.textContent = listId;
+                resultDiv.style.display = 'block';
+            } else {
+                errorDiv.textContent = '❌ Could not find List ID in URL. Please make sure you copied the List Settings URL.';
+            }
+        }
+
+        function copyToClipboard() {
+            const listId = document.getElementById('listIdDisplay').textContent;
+            navigator.clipboard.writeText(listId).then(() => {
+                alert('✅ List ID copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy. Please select and copy manually.');
+            });
+        }
+
+        // Allow pressing Enter to extract
+        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                extractListId();
+            }
+        });
+    </script>
+</body>
+</html>
