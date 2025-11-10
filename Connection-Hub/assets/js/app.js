@@ -46,9 +46,9 @@ class ConnectionHubApp {
             this.renderGraph();
         });
 
-        // Refresh button
+        // Refresh button - use refreshData to preserve node positions
         document.getElementById('refresh-btn').addEventListener('click', () => {
-            this.loadData();
+            this.refreshData();
         });
 
         // Reset zoom button
@@ -141,6 +141,36 @@ class ConnectionHubApp {
         }
     }
 
+    async refreshData() {
+        // Refresh data from SharePoint without clearing node positions
+        const loadingEl = document.getElementById('loading');
+        
+        try {
+            loadingEl.style.display = 'block';
+            console.log('Refreshing data from SharePoint...');
+            
+            // Fetch fresh data from SharePoint
+            try {
+                this.currentData = await this.api.fetchListData();
+                console.log('Data refreshed successfully:', this.currentData.length, 'items');
+            } catch (error) {
+                console.error('SharePoint fetch failed:', error);
+                throw error;
+            }
+            
+            // Re-render graph (preserves node positions)
+            console.log('Re-rendering graph with refreshed data...');
+            this.renderGraph();
+            console.log('Graph updated successfully');
+            
+        } catch (error) {
+            console.error('Error refreshing data:', error);
+            alert('Failed to refresh data. Error: ' + error.message);
+        } finally {
+            loadingEl.style.display = 'none';
+        }
+    }
+
     renderGraph() {
         if (this.currentData.length === 0) {
             console.warn('No data to render');
@@ -150,7 +180,8 @@ class ConnectionHubApp {
         this.graph.render(
             this.currentData,
             this.currentConnectorType,
-            (personData) => this.selectPerson(personData)
+            (personData) => this.selectPerson(personData),
+            () => this.deselectPerson() // Background click handler
         );
     }
 
@@ -170,6 +201,15 @@ class ConnectionHubApp {
         
         // Update button text to "Edit"
         document.getElementById('edit-btn').textContent = 'Edit';
+    }
+
+    deselectPerson() {
+        // Exit edit mode if active
+        if (this.isEditMode) {
+            this.cancelEdit();
+        }
+        
+        this.clearSelection();
     }
 
     clearSelection() {
@@ -269,6 +309,7 @@ class ConnectionHubApp {
             document.getElementById('form-position').value = personData['Job position'] || '';
             document.getElementById('form-website').value = personData.Website || '';
             document.getElementById('form-linkedin').value = personData.Linkedin || '';
+            document.getElementById('form-picture').value = personData['Profile Picture'] || '';
             document.getElementById('form-related').value = personData['Related to'] || '';
             document.getElementById('form-keywords').value = personData['Key words'] || '';
             document.getElementById('form-lastcontact').value = personData['Date of last contact'] || '';
@@ -312,6 +353,7 @@ class ConnectionHubApp {
             'Job position': document.getElementById('form-position').value,
             'Website': document.getElementById('form-website').value,
             'Linkedin': document.getElementById('form-linkedin').value,
+            'Profile Picture': document.getElementById('form-picture').value,
             'Related to': document.getElementById('form-related').value,
             'Key words': document.getElementById('form-keywords').value,
             'Date of last contact': document.getElementById('form-lastcontact').value,
@@ -333,10 +375,10 @@ class ConnectionHubApp {
                 const updatedItem = await this.api.updateListItem(this.selectedPerson.id, formData);
                 console.log('Person updated successfully:', updatedItem);
                 
-                // Update in current data array
+                // Update in current data array with all fields including ID
                 const index = this.currentData.findIndex(p => p.id === this.selectedPerson.id);
                 if (index !== -1) {
-                    this.currentData[index] = { ...formData, id: this.selectedPerson.id };
+                    this.currentData[index] = { ...this.currentData[index], ...formData };
                     console.log('Updated local data at index:', index);
                 }
             } else {
@@ -350,8 +392,8 @@ class ConnectionHubApp {
                 console.log('Added to local data, total items:', this.currentData.length);
             }
             
-            // Re-render graph with updated data
-            console.log('Re-rendering graph...');
+            // Re-render graph with updated data (preserves node positions)
+            console.log('Re-rendering graph with updated data...');
             this.renderGraph();
             
             // Exit edit mode

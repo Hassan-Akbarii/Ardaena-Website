@@ -160,7 +160,9 @@ class SharePointAPI {
                 'Website': fields.Website || '',
                 'Job position': fields.Jobposition || fields.JobPosition || fields.Job_x0020_position || '',
                 'Linkedin': fields.Linkedin || fields.LinkedIn || fields.LinkedIn0 || '',
-                'Profile Picture': fields.ProfilePicture || fields.Profile_x0020_Picture || '',
+                'Profile Picture': (typeof fields.ProfilePictureURL === 'object' && fields.ProfilePictureURL?.Url) 
+                    ? fields.ProfilePictureURL.Url 
+                    : (fields.ProfilePictureURL || fields.ProfilePicture || fields.Profile_x0020_Picture_x0020_URL || fields.Profile_x0020_Picture || ''),
                 'Date of last contact': fields.Dateoflastcontact || fields.DateOfLastContact || fields.Date_x0020_of_x0020_last_x0020_contact || '',
                 'Note': fields.Note || fields.Notes || fields.NoteIfneeded || fields.Note_x0028_If_x0020_needed_x0029_ || ''
             };
@@ -184,6 +186,12 @@ class SharePointAPI {
         if (data.Website) transformed['Website'] = data.Website;
         if (data['Job position']) transformed['Jobposition'] = data['Job position'];
         if (data.Linkedin) transformed['Linkedin'] = data.Linkedin;
+        // Handle Profile Picture URL - SharePoint Hyperlink field via Graph API
+        if (data['Profile Picture']) {
+            console.log('Attempting to save Profile Picture:', data['Profile Picture']);
+            // Try sending as plain string - Graph API might handle Hyperlink fields differently
+            transformed['ProfilePictureURL'] = data['Profile Picture'];
+        }
         if (data['Date of last contact']) {
             // Ensure date is in proper format (YYYY-MM-DD or ISO string)
             transformed['Dateoflastcontact'] = data['Date of last contact'];
@@ -220,6 +228,7 @@ class SharePointAPI {
 
             // Transform data to SharePoint format
             const sharePointData = this.transformToSharePointFormat(data);
+            console.log('Sending to SharePoint:', sharePointData);
 
             // Construct the Graph API endpoint
             const endpoint = `https://graph.microsoft.com/v1.0/sites/${this.siteUrl}/lists/${this.listId}/items/${itemId}/fields`;

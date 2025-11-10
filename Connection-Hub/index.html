@@ -8,34 +8,37 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header Section -->
+        <!-- Header Section with Controls -->
         <header class="header">
-            <h1>Connection Hub</h1>
-            <p class="subtitle">Professional Network Visualization</p>
+            <div class="header-content">
+                <div class="header-left">
+                    <button id="toggle-left-panel" class="btn btn-icon" title="Toggle Info Panel">
+                        <span class="icon">☰</span>
+                    </button>
+                    <div class="header-title">
+                        <h1>Connection Hub</h1>
+                        <p class="subtitle">Professional Network Visualization</p>
+                    </div>
+                </div>
+                
+                <div class="header-center">
+                    <label for="connector-select">Select Connector Category:</label>
+                    <select id="connector-select" class="connector-selector">
+                        <option value="relatedTo">Related To</option>
+                        <option value="jobPosition">Job Position</option>
+                        <option value="keywords">Key Words</option>
+                    </select>
+                </div>
+                
+                <div class="header-right">
+                    <button id="refresh-btn" class="btn btn-primary">Refresh Data</button>
+                    <button id="reset-zoom-btn" class="btn btn-secondary">Reset View</button>
+                    <button id="toggle-right-panel" class="btn btn-icon" title="Toggle Calendar Panel">
+                        <span class="icon">📅</span>
+                    </button>
+                </div>
+            </div>
         </header>
-
-        <!-- Control Panel -->
-        <div class="control-panel">
-            <div class="control-group">
-                <button id="toggle-left-panel" class="btn btn-icon" title="Toggle Info Panel">
-                    <span class="icon">☰</span>
-                </button>
-                <label for="connector-select">Select Connector Category:</label>
-                <select id="connector-select" class="connector-selector">
-                    <option value="relatedTo">Related To</option>
-                    <option value="jobPosition">Job Position</option>
-                    <option value="keywords">Key Words</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <button id="refresh-btn" class="btn btn-primary">Refresh Data</button>
-                <button id="reset-zoom-btn" class="btn btn-secondary">Reset View</button>
-                <button id="toggle-right-panel" class="btn btn-icon" title="Toggle Calendar Panel">
-                    <span class="icon">📅</span>
-                </button>
-            </div>
-        </div>
 
         <!-- Main Content Area with Panels -->
         <div class="main-content">
@@ -127,6 +130,11 @@
                                 <div class="form-group">
                                     <label for="form-linkedin">LinkedIn:</label>
                                     <input type="url" id="form-linkedin" name="linkedin">
+                                </div>
+                                <div class="form-group">
+                                    <label for="form-picture">Profile Picture URL:</label>
+                                    <input type="url" id="form-picture" name="picture" placeholder="https://example.com/photo.jpg">
+                                    <small style="color: #666; font-size: 11px;">Paste image URL from LinkedIn or other source</small>
                                 </div>
                             </div>
 
