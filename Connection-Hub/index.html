@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection Hub - Network Visualization</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>Connection Hub</h1>
+            <p class="subtitle">Professional Network Visualization</p>
+        </header>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="control-group">
+                <label for="connector-select">Select Connector Category:</label>
+                <select id="connector-select" class="connector-selector">
+                    <option value="relatedTo">Related To</option>
+                    <option value="jobPosition">Job Position</option>
+                    <option value="keywords">Key Words</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <button id="refresh-btn" class="btn btn-primary">Refresh Data</button>
+                <button id="reset-zoom-btn" class="btn btn-secondary">Reset View</button>
+            </div>
+        </div>
+
+        <!-- Graph Canvas -->
+        <div id="graph-container" class="graph-container">
+            <svg id="network-graph"></svg>
+            <div id="loading" class="loading">Loading connections...</div>
+        </div>
+
+        <!-- Data Modal -->
+        <div id="data-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="modal-name">Person Name</h2>
+                
+                <div class="modal-body">
+                    <div class="data-section">
+                        <h3>Contact Information</h3>
+                        <div class="data-item">
+                            <strong>Firm:</strong>
+                            <span id="modal-firm">-</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>Job Position:</strong>
+                            <span id="modal-position">-</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>Website:</strong>
+                            <a id="modal-website" href="#" target="_blank">-</a>
+                        </div>
+                        <div class="data-item">
+                            <strong>LinkedIn:</strong>
+                            <a id="modal-linkedin" href="#" target="_blank">View Profile</a>
+                        </div>
+                    </div>
+
+                    <div class="data-section">
+                        <h3>Connection Details</h3>
+                        <div class="data-item">
+                            <strong>Related To:</strong>
+                            <span id="modal-related">-</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>Key Words:</strong>
+                            <span id="modal-keywords">-</span>
+                        </div>
+                        <div class="data-item">
+                            <strong>Last Contact:</strong>
+                            <span id="modal-lastcontact">-</span>
+                        </div>
+                    </div>
+
+                    <div class="data-section" id="notes-section">
+                        <h3>Notes</h3>
+                        <p id="modal-notes">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- D3.js Library for Graph Visualization -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
+    <!-- Application Scripts -->
+    <script src="assets/js/sharepoint-api.js"></script>
+    <script src="assets/js/graph.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
